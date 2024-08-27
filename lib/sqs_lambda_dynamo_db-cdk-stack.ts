@@ -40,6 +40,7 @@ export class SqsLambdaDynamoDbCdkStack extends cdk.Stack {
     //Configure Lambda to Trigger on SQS Messages
     myLambda.addEventSource(new lambdaEventSources.SqsEventSource(myQueue));
 
-    
+    //Grant SQS Access to Lambda
+    myQueue.grantSendMessages(myLambda);
   }
 }
