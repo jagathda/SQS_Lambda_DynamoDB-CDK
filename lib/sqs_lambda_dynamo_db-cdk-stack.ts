@@ -17,6 +17,12 @@ export class SqsLambdaDynamoDbCdkStack extends cdk.Stack {
       visibilityTimeout: cdk.Duration.seconds(30)
     });
 
-
+    //Define the DynamoDB Table
+    const myTable = new dynamodb.Table(this, 'MyTable', {
+      partitionKey: { name: 'id', type: dynamodb.AttributeType.STRING },
+      tableName: 'my-table-cdk',
+      removalPolicy: cdk.RemovalPolicy.DESTROY
+    });
+    
   }
 }
