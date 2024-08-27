@@ -42,5 +42,16 @@ export class SqsLambdaDynamoDbCdkStack extends cdk.Stack {
 
     //Grant SQS Access to Lambda
     myQueue.grantSendMessages(myLambda);
+
+    //Grant Lambda to write to CloudWatch Logs
+    myLambda.addToRolePolicy(new iam.PolicyStatement({
+      actions: [
+        'logs:CreateLogGroup',
+        'logs:CreateLogStream',
+        'logs:PutLogEvents',
+      ],
+      resources: ['*'],
+    }));
+    
   }
 }
