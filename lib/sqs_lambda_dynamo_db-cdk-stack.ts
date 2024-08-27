@@ -26,7 +26,7 @@ export class SqsLambdaDynamoDbCdkStack extends cdk.Stack {
 
     // Define the Lambda Function
     const myLambda = new lambda.Function(this, 'MyLambda', {
-      runtime: lambda.Runtime.NODEJS_16_X,
+      runtime: lambda.Runtime.NODEJS_20_X,
       code: lambda.Code.fromAsset('lambda'),
       handler: 'index.handler',
       environment: {
