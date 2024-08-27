@@ -23,6 +23,17 @@ export class SqsLambdaDynamoDbCdkStack extends cdk.Stack {
       tableName: 'my-table-cdk',
       removalPolicy: cdk.RemovalPolicy.DESTROY
     });
+
+    // Define the Lambda Function
+    const myLambda = new lambda.Function(this, 'MyLambda', {
+      runtime: lambda.Runtime.NODEJS_16_X,
+      code: lambda.Code.fromAsset('lambda'),
+      handler: 'index.handler',
+      environment: {
+        TABLE_NAME: myTable.tableName
+      }
+    });
+    
     
   }
 }
