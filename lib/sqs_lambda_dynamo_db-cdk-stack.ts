@@ -37,6 +37,9 @@ export class SqsLambdaDynamoDbCdkStack extends cdk.Stack {
     //Grant DynamoDB Access to Lambda
     myTable.grantReadWriteData(myLambda);
 
+    //Grant Lambda to read messages from the SQS queue
+    myQueue.grantConsumeMessages(myLambda);
+
     //Configure Lambda to Trigger on SQS Messages
     myLambda.addEventSource(new lambdaEventSources.SqsEventSource(myQueue));
 
