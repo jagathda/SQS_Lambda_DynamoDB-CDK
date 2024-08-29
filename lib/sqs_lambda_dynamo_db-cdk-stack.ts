@@ -6,25 +6,25 @@ import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as lambdaEventSources from 'aws-cdk-lib/aws-lambda-event-sources';
 import * as iam from 'aws-cdk-lib/aws-iam';
 
-//Stack Class
+//Define the Stack Class
 export class SqsLambdaDynamoDbCdkStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    //Define the SQS Queue
+    //Create an SQS Queue
     const myQueue = new sqs.Queue(this, 'MyQueue', {
       queueName: 'my-queue-cdk',
       visibilityTimeout: cdk.Duration.seconds(30)
     });
 
-    //Define the DynamoDB Table
+    //Create a DynamoDB Table
     const myTable = new dynamodb.Table(this, 'MyTable', {
       partitionKey: { name: 'id', type: dynamodb.AttributeType.STRING },
       tableName: 'my-table-cdk',
       removalPolicy: cdk.RemovalPolicy.DESTROY
     });
 
-    // Define the Lambda Function
+    //Create a Lambda Function
     const myLambda = new lambda.Function(this, 'MyLambda', {
       runtime: lambda.Runtime.NODEJS_20_X,
       code: lambda.Code.fromAsset('lambda'),
@@ -34,16 +34,14 @@ export class SqsLambdaDynamoDbCdkStack extends cdk.Stack {
       }
     });
     
-    //Grant DynamoDB Access to Lambda
+    //Grant Permissions to Lambda
     myTable.grantReadWriteData(myLambda);
-
-    //Grant Lambda to read messages from the SQS queue
     myQueue.grantConsumeMessages(myLambda);
 
-    //Configure Lambda to Trigger on SQS Messages
+    //Set SQS as Event Source for Lambda
     myLambda.addEventSource(new lambdaEventSources.SqsEventSource(myQueue));
 
-    //Grant Lambda to write to CloudWatch Logs
+    //Grant CloudWatch Logging Permissions to Lambda
     myLambda.addToRolePolicy(new iam.PolicyStatement({
       actions: [
         'logs:CreateLogGroup',
@@ -52,6 +50,5 @@ export class SqsLambdaDynamoDbCdkStack extends cdk.Stack {
       ],
       resources: ['*'],
     }));
-
   }
 }
